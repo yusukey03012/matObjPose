@@ -25,15 +25,15 @@ We use MatConvNet framework. (As of 2021, we confirmed that the compilation of M
     https://www.vlfeat.org/matconvnet/models/imagenet-caffe-alex.mat
 
 4. Get other dependencies from below and put them into '/external'
-- `read_off.m` from Gabriel Peyré
+- `read_off.m` from:
   
   https://github.com/gpeyre/numerical-tours/tree/master/matlab/toolbox_graph
 
-- `unpackRGBFloat.m` from Kevin Lai.
+- `unpackRGBFloat.m` from:
   
   https://rgbd-dataset.cs.washington.edu/software.html
 
-- `minimize_point_to_plane.m` and `get_transform_mat.m` from Tolga Birdal
+- `minimize_point_to_plane.m` and `get_transform_mat.m` from:
   
   https://jp.mathworks.com/matlabcentral/fileexchange/47152-icp-registration-using-efficient-variants-and-multi-resolution-scheme?s_tid=prof_contriblnk
 

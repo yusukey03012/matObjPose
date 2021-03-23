@@ -1,6 +1,7 @@
 classdef Mesh < matlab.mixin.Copyable
-    % Mesh このクラスの概要をここに記述
-    %   詳細説明をここに記述
+    % Mesh 
+    % Copyright (C) 2017-2021 Yusuke Yoshiyasu.
+    
     
     properties
         

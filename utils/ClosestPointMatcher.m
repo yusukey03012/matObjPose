@@ -1,6 +1,6 @@
 classdef ClosestPointMatcher < matlab.mixin.Copyable
-    %CLOSESTPOINTMATCHER このクラスの概要をここに記述
-    %   詳細説明をここに記述
+    %CLOSESTPOINTMATCHER 
+    % Copyright (C) 2017-2021 Yusuke Yoshiyasu.
     
     properties
         

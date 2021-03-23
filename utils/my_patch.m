@@ -1,78 +1,8 @@
-function h=my_patch(vertex,face,options)
-
-% plot_mesh - plot a 3D mesh.
-%
-%   plot_mesh(vertex,face, options);
-%
-%   'options' is a structure that may contains:
-%       - 'normal' : a (nvertx x 3) array specifying the normals at each vertex.
-%       - 'edge_color' : a float specifying the color of the edges.
-%       - 'face_color' : a float specifying the color of the faces.
-%       - 'face_vertex_color' : a color per vertex or face.
-%       - 'vertex'
-%
-%   See also: mesh_previewer.
-%
-%   Copyright (c) 2004 Gabriel Peyr?
+function h=my_patch(vertex,face)
 
 
-if nargin<2
-    error('Not enough arguments.');
-end
-if nargin<3
-    options.null = 0;
-end
+h=patch('vertices',vertex,'faces',face,'facecolor','g','edgecolor','none');
 
-
-% can flip to accept data in correct ordering
-if (size(vertex,1)==3 || size(vertex,1)==2) && size(vertex,2)~=3
-    vertex = vertex';
-end
-if size(face,1)==3 && size(face,2)~=3
-    face = face';
-end
-
-if size(face,1)==4 && size(face,2)~=4
-    face = face';
-end
-
-if (size(face,2)~=3 && size(face,2)~=4) || (size(vertex,2)~=3 && size(vertex,2)~=2)
-    error('face or vertex does not have correct format.');
-end
-
-if ~isfield(options, 'face_color')
-    options.face_color = 1;
-end
-face_color = options.face_color;
-
-
-if ~isfield(options, 'face_vertex_color')
-    options.face_vertex_color = ones(size(vertex,1),1);
-end
-face_vertex_color = options.face_vertex_color;
-
-
-if isempty(face_vertex_color)
-    h=patch('vertices',vertex,'faces',face,'facecolor',[face_color face_color face_color],'edgecolor',[edge_color edge_color edge_color]);
-else
-    nverts = size(vertex,1);
-    % vertex_color = rand(nverts,1);
-    if size(face_vertex_color,1)==size(vertex,1)
-        shading_type = 'interp';
-    else
-        shading_type = 'flat';
-    end
-    h=patch('vertices',vertex,'faces',face,'FaceVertexCData',face_vertex_color, 'FaceColor','interp','edgecolor','none');
-end
-
-
-
-%%colormap gray(256);
 material shiny;
 lighting phong;
 axis equal;
-%axis vis3d
-%axis auto
-%axis manual
-%axis off;
-%set(gcf, 'color', 'w')

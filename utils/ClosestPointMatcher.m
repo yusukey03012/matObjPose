@@ -20,11 +20,7 @@ classdef ClosestPointMatcher < matlab.mixin.Copyable
             self.source = source;
             self.target = target;
             self.KDT = KDTreeSearcher(target.vertex);              
-            %self.ann1 = ann(target.vertex');
-            %KDT = KDTreeSearcher(target.vertex);
-            
-            %self.KDT = copy(KDT);
-            
+           
             
         end
         function delete(self)         
@@ -48,7 +44,6 @@ classdef ClosestPointMatcher < matlab.mixin.Copyable
             end
             
             
-            %idx = ksearch(self.ann1, self.source.vertex(idxVisible,:)', 1, 0.001);
             
             idx = knnsearch(self.KDT, self.source.vertex(idxVisible,:) ,'K',1);
             disp = self.target.vertex(idx,:) - self.source.vertex(idxVisible,:);
@@ -97,10 +92,7 @@ classdef ClosestPointMatcher < matlab.mixin.Copyable
             end
             
             
-            %ann2 = ann(self.source.vertex(idxVisible,:)');
-            %idx = ksearch(ann2, self.target.vertex', 1, 0.001);
-            %ann2 = close(ann2);
-            
+           
             idx = knnsearch(self.source.vertex(idxVisible,:), self.target.vertex ,'K',1);           
                                  
                         

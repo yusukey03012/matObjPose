@@ -6,12 +6,12 @@ opts.name = ['layer', num2str(layerIndex)];
 opts.params = {};
 opts.out = {['x', num2str(layerIndex)]};
 opts.scale = 1;
-        
+
 
 if isempty(net.layers)
-  opts.in= {};
-else 
-  opts.in  = net.layers(end).outputs;
+    opts.in= {};
+else
+    opts.in  = net.layers(end).outputs;
 end
 
 opts = vl_argparse(opts, varargin);
@@ -20,37 +20,37 @@ if isa(layer, 'dagnn.Conv')
     opts.params = {['convf',num2str(layerIndex)], ['convb',num2str(layerIndex)]};
     
 elseif isa(layer, 'dagnn.ConvTranspose')
-   opts.params = {['deconvf' , num2str(layerIndex)]};
+    opts.params = {['deconvf' , num2str(layerIndex)]};
 end
 
 net.addLayer(opts.name,...
-             layer,...
-             opts.in,...
-             opts.out,... % output
-             opts.params); % params
+    layer,...
+    opts.in,...
+    opts.out,... % output
+    opts.params); % params
 
 layerIndex= layerIndex +1;
 
 
 if isa(layer, 'dagnn.Conv')
     
-        opts.weightInitMethod = 'xavierimproved';
-        opts.weightInitMethod = 'gaussian';
-        
-        net.params(end-1).value =...
-              init_weight(opts, layer.size(1), layer.size(2), layer.size(3), layer.size(4), 'single') ;
-        net.params(end-1).learningRate=1;
-        net.params(end-1).weightDecay=1;
-                
-        net.params(end).value = zeros(1, layer.size(4),'single');
-        net.params(end).learningRate=2;
-        net.params(end).weightDecay=0;
+    opts.weightInitMethod = 'xavierimproved';
+    opts.weightInitMethod = 'gaussian';
     
-if opts.batchNorm 
-    net = addBatchNorm(net, layerIndex);
-    layerIndex= layerIndex +1;
-
-end
+    net.params(end-1).value =...
+        init_weight(opts, layer.size(1), layer.size(2), layer.size(3), layer.size(4), 'single') ;
+    net.params(end-1).learningRate=1;
+    net.params(end-1).weightDecay=1;
+    
+    net.params(end).value = zeros(1, layer.size(4),'single');
+    net.params(end).learningRate=2;
+    net.params(end).weightDecay=0;
+    
+    if opts.batchNorm
+        net = addBatchNorm(net, layerIndex);
+        layerIndex= layerIndex +1;
+        
+    end
 elseif isa(layer, 'dagnn.ConvTranspose')
     net.params(end).value = ones(2,2,f,f,'single');
     net.params(end).learningRate = 0 ;
@@ -77,10 +77,10 @@ name = sprintf('layer%d', layerIndex);
 
 block = dagnn.BatchNorm();
 paramNames = {sprintf('%sm', name) ...
-              sprintf('%sb', name) ...
-              sprintf('%sx', name) };
+    sprintf('%sb', name) ...
+    sprintf('%sx', name) };
 
-% add new layer to the network          
+% add new layer to the network
 net.addLayer(...
     name, ...
     block, ...

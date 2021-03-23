@@ -1,18 +1,28 @@
 clear 
-
+addpath('external')
 addpath('utils')
 %%
 
-depth_thresh = 3;
+isVis =1 % if, visualize the ICP process
 
-file = 'data\pc000000_.pcd';
+file_pcd = 'data\pc000000_.pcd'; % point cloud file
+file_model = 'data\lipton_rot.off'; % 3D model file
 
-[data, I, rgb, xyd] = readPCD(file, 1,  depth_thresh);
+bbox = [340,95,497,227]; % manually set the bounding box of the object to crop out the region
 
-[v,f] =read_off('data\lipton_rot.off');
+
+option.dst = 0.1; % distance rejection threshold  
+option.theta = 180; % angle rejection threshold 
+option.project = 0; % if 1, project the translations to the surface normal orientations 
+option.visibility = 1; % if 1, remove points to match that are not visibile from the camera
+option.viewpoint = [0,0,0]; % postion of the camera used for computing visibilities 
+option.num_iter = 30; % number of ICP iterations
+
+depth_thresh = 1; % remove point clouds farther than 1 meter in depth
+
+[data, I, rgb, xyd] = readPCD(file_pcd, 1,  depth_thresh);
+[v,f] =read_off(file_model);
 mesh = Mesh(v/1000, f, 'simple');
-
-bbox = [340,95,497,227];
 
 xyd_extract = xyd(bbox(2):bbox(4), bbox(1):bbox(3),:);
 xyd_extract2 = nan(size(xyd));
@@ -24,13 +34,6 @@ x(x==0) = nan;
 y(y==0) = nan;
 z(z==0) = nan;
 
-%x_fill = fillHoles(x, 'recursive-dilate');
-%y_fill = fillHoles(y, 'recursive-dilate');
-%z_fill = fillHoles(z, 'recursive-dilate');
-%vertex_extract = [x_fill(:),y_fill(:),z_fill(:)];
-%xyd_extract_fill = cat(3,x_fill,y_fill,z_fill);
-%xyd_center = reshape(xyd_extract_fill(round(size(xyd_extract_fill,1)/2) ,round(size(xyd_extract_fill,1)/2),:), [1,3]);
-
 sampleRate = 1;
 [Nx,Ny,Nz] = surfnorm(x,y,z);
 xyz = [x(:),y(:),z(:)];
@@ -40,7 +43,7 @@ idx2 = find(xyz(idx,3) < depth_thresh);
 xyz_subsample = xyz(idx(idx2(1:sampleRate:end)),:);
 N_subsample = N(idx(idx2(1:sampleRate:end)),:);
 data_extract = PointNormal(xyz_subsample, [], -N_subsample);
-xyd_center = median(data_extract.vertex)
+xyd_center = median(data_extract.vertex);
 
 R_init =  Rotation_by_Axis('y', 90) * Rotation_by_Axis('x', -90);
 t_init = - mean(mesh.vertex) + xyd_center;
@@ -49,8 +52,8 @@ pTranslate = bsxfun(@plus, bsxfun(@minus, p2, mean(p2) ), xyd_center);
 v_init =pTranslate;
 model = Mesh(v_init, mesh.face, 'simple');
 model.ComputeNormal()
+
 %%
-isVis =1
 if isVis ==1
     close all
     figure('color', [0.9, 0.9, 0.9])
@@ -59,23 +62,18 @@ if isVis ==1
     plot3(data_extract.vertex(:,1), data_extract.vertex(:,2), data_extract.vertex(:,3), '.')
     xlabel('x');ylabel('y');zlabel('z')
     view(150,300)
-    camlight('infinite')
-    
+    camlight('infinite')    
 end
+%%
 
-tic
+
 matcher = ClosestPointMatcher(model, data_extract);
-option.dst = 0.1; 
-option.theta =180;
-option.project = 0; 
-option.visibility=1; 
-option.viewpoint = [0,0,0];
 
-% optimize translation
-for iter = 1:30
+% optimize translation using point-to-point error
+tic
+for iter = 1:option.num_iter
     iter
     
-    %[idxS, idxT, goalPos]= matcher.ComputeTargetToSourceMatch(option);
     [idxS, idxT, goalPos]= matcher.ComputeSourceToTargetMatch(option);
     [T, r, s, t1, t2,k] = ComputeGlobalTransformation(model.vertex, data_extract.vertex, idxS,idxT);
     r = eye(3);
@@ -91,15 +89,10 @@ end
 toc;
 
 
+% optimize rotation + translation using point-to-plane error
 tic
-% optimize rotation + translation
-option.dst = 0.1; 
-option.theta =180;
-option.project = 0; 
 option.visibility= 0; 
-option.viewpoint = [0,0,0];
-
-for iter = 1:50
+for iter = 1:option.num_iter
     
     iter
     [idxS, idxT, goalPos]= matcher.ComputeTargetToSourceMatch(option);

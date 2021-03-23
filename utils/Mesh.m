@@ -18,7 +18,7 @@ classdef Mesh < matlab.mixin.Copyable
         numFace = []
         numPair = []
         numBoundary =[]
-                
+        
         edgeIdx =[]
         fRing=[]
         vRing=[]
@@ -35,7 +35,7 @@ classdef Mesh < matlab.mixin.Copyable
         
         edgeVecV = []
         edgeLengthV = []
-                
+        
         edgeVec1 = []
         edgeVec2 = []
         
@@ -43,12 +43,12 @@ classdef Mesh < matlab.mixin.Copyable
         area = []
         theta = []
         hinge  = []
-               
+        
         l1 = []
         l2 = []
         fNormal = []
         vNormal = []
-                       
+        
         
         idxBoundary =[]
         pairBoundary = []
@@ -59,7 +59,7 @@ classdef Mesh < matlab.mixin.Copyable
     end
     
     methods (Access='public')
-                
+        
         function self=Mesh(vertex, face, mode)
             
             self.vertex = vertex;
@@ -68,7 +68,7 @@ classdef Mesh < matlab.mixin.Copyable
             self.Setup()
             
             
-        end       
+        end
         
         function Setup(self)
             
@@ -97,15 +97,15 @@ classdef Mesh < matlab.mixin.Copyable
                 
                 %self.ComputeAngle()
                 %self.ComputeArea()
-         %       self.ComputeDihedralAngle()
-           %     self.ConstructHingeVertexPair()
+                %       self.ComputeDihedralAngle()
+                %     self.ConstructHingeVertexPair()
                 % self.ComputeVertexFaceRing()
                 %self.ComputeBoundary()
                 %self.ComputeVertexRing()
                 
             end
             
-        end       
+        end
         
         
         
@@ -130,21 +130,21 @@ classdef Mesh < matlab.mixin.Copyable
                 self.ComputeEdgeLength()
                 self.ComputeAngle()
                 self.ComputeArea()
-               %{
+                %{
                 self.ComputeDihedralAngle()
                 %}
             end
             
         end
         
-                        
+        
         function ComputeCentroids(self)
             
             self.centroids = (self.vertex(self.face(:,1),:) +...
                 self.vertex(self.face(:,2),:) +...
                 self.vertex(self.face(:,3),:))/3;
             
-        end    
+        end
         
         
         function edgeTransformed = BackTransformEdge(self,template)
@@ -152,24 +152,24 @@ classdef Mesh < matlab.mixin.Copyable
             edgeTransformed  = self.edgeVecV;
             for i = 1:length(self.edgeVecV)
                 edgeTransformed(i,:) = edgeTransformed(i,:) * R(3*self.vEdge(i,1)-2:3*self.vEdge(i,1),:)';
-            end           
+            end
         end
-            
+        
         function ComputeEdgeDir(self,template)
             edgeTransformed = self.BackTransformEdge(template);
             self.edgeDir = edgeTransformed ./[self.edgeLengthV, self.edgeLengthV, self.edgeLengthV];
         end
-                
+        
         function ComputeLaplacianMatrix(self)
             
             [self.L, a] = mshlp_matrix2(self.vertex,self.face);
             self.A = spdiags(a,0,size(a,1),size(a,1));
             
         end
-            
         
         
-                function ConstructHingeVertexPair(self)
+        
+        function ConstructHingeVertexPair(self)
             
             self.hingePair = zeros(self.numPair,2);
             for i = 1:self.numPair
@@ -225,10 +225,10 @@ classdef Mesh < matlab.mixin.Copyable
             F=sortrows(F);
             %A = MeshClass.triangulation2adjacency(self.face');
             %[i,j,s] = find(sparse(A));
-                        
+            
             % create empty cell array
             self.vRing = struct('r', num2cell(zeros(1,nverts)));
-                        
+            
             for m = 1:nverts
                 
                 onering=unique(F(F(:,1)== idx(m),2));
@@ -239,7 +239,7 @@ classdef Mesh < matlab.mixin.Copyable
             
             
         end
-                
+        
         function ComputeVertexFaceRing(self)
             
             
@@ -255,7 +255,7 @@ classdef Mesh < matlab.mixin.Copyable
             
         end
         
-         function ComputeVertexFaceRing2(self,idx)
+        function ComputeVertexFaceRing2(self,idx)
             
             
             self.fRing=cell(length(idx),1);
@@ -271,7 +271,7 @@ classdef Mesh < matlab.mixin.Copyable
             
         end
         
-                
+        
         function ComputeEdgeVector(self)
             
             self.edgeVec = self.vertex(self.edgeIdx(:,2),:)...
@@ -296,7 +296,7 @@ classdef Mesh < matlab.mixin.Copyable
             
             self.edgeLengthV = sum(self.edgeVecV.^2,2).^0.5;
             
-        end             
+        end
         
         function ComputeAngle(self)
             
@@ -335,19 +335,19 @@ classdef Mesh < matlab.mixin.Copyable
             end
             
             if isempty(varargin) ==1
-            
                 
                 
-            
-            %normal= ComputeNormal_mex(self.vertex,self.face,N);
-            
-            d2=sum(normal.^2,2).^0.5;
-
-            self.vNormal= normal./[d2,d2,d2];
+                
+                
+                %normal= ComputeNormal_mex(self.vertex,self.face,N);
+                
+                d2=sum(normal.^2,2).^0.5;
+                
+                self.vNormal= normal./[d2,d2,d2];
             end
-
+            
         end
-                        
+        
         function ComputeArea(self)
             
             self.area = self.edgeLength(3:3:end).*self.edgeLength(1:3:end).*sin(self.theta(1:3:end))/2;
@@ -373,7 +373,7 @@ classdef Mesh < matlab.mixin.Copyable
             
         end
         
-           function ConstructTriPair(self)
+        function ConstructTriPair(self)
             
             trep = TriRep(self.face, self.vertex);
             pair = edgeAttachments(trep, self.edgeIdx);
@@ -422,7 +422,7 @@ classdef Mesh < matlab.mixin.Copyable
             
             
         end
-   
+        
         
         function ConstructEdgeConnectivity(self)
             
@@ -430,10 +430,10 @@ classdef Mesh < matlab.mixin.Copyable
             self.edgeIdx =reshape(self.edgeIdx,2,[])';
         end
         
-     
-                
-
-               
+        
+        
+        
+        
         
     end
     

@@ -6,7 +6,7 @@ addpath('utils')
 isVis =1 % if, visualize the ICP process
 
 file_pcd = 'data\pc000000_.pcd'; % point cloud file
-file_model = 'data\lipton_rot.off'; % 3D model file
+file_model = 'data\carton_rot.off'; % 3D model file
 
 bbox = [340,95,497,227]; % manually set the bounding box of the object to crop out the region
 

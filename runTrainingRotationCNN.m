@@ -12,8 +12,8 @@ addpath(fullfile(matconvnetpath, 'examples'));
 %%
 
 trainObjectPose('gpus',[],...
-                'expDir', fullfile('experiments','objectPose','lipton1'),... % save folder
-                'imdbPath','data\lipton_lemon.mat',... % image database　　
+                'expDir', fullfile('experiments','objectPose','tool1'),... % save folder
+                'imdbPath','data\tool_yellow.mat',... % image database　　
                 'inNode',3,... % rgb
                 'outNode',3,... % angles 
                 'batchSize', 40,...

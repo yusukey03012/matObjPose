@@ -7,7 +7,8 @@ is included.
 
 ## Environment 
 MATLAB with Image Processing Toolbox, Computer Vision Toolbox, Parallel Computing Toolbox and Statistics and Machine Learning Toolbox.
-We use MatConvNet framework. (As of 2021, we confirmed that the compilation of MatConvNet for CPU works under Windows 10.)
+We use MatConvNet framework. Please follow the installation guidelines provided in their website.  
+(As of 2021, we confirmed that the compilation of MatConvNet for CPU works under Windows 10, which is sufficiently fast enough to just try our framework.)
 
 ## Installation guidelines
 1. `git clone https://github.com/yusukey03012/matObjPose.git`
@@ -43,7 +44,7 @@ To train the model run `runTrainingRotationCNN.m`.
 You need to specify your path to the MatConvNet folder at: `matconvnetpath = /path/to/your/MatConvnet`.
 During training it will generate a .mat file that contains the weight of the trained model at each epoch.
 You may want to modify your saving directory by changing 'expDir' option of `trainObjectPose.m` and adjust other hyper parameters as well.
-We provided a small training dataset in `data/lipton_lemon.mat` with around 1000 images to train our pose detector.  
+We provided a small training dataset in `data/tool_yellow.mat` with around 1000 images to train our pose detector.  
 To train using GPUs, change 'gpus' option, to e.g. [0] or [0,1,2,3].
 
 ## Test
@@ -59,7 +60,7 @@ Run: `performICP.m`.
 It runs the point-to-point ICP algorithm first to optimize translation and then perform point-to-plane ICP to optimize both the orientation and translation.
 We only provide one 3D model and one point clouds file in this demo but you could try your data by changing
 `file_pcd` and  `file_model`. 
-We assume here that the region of the object exist is roughly detected in the point clouds.   
+We assume here that the region of the object is detected roughly in the point clouds.   
 
 ### Reference
 ```

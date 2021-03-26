@@ -9,10 +9,10 @@ addpath('external')
 run(fullfile(matconvnetpath, 'matlab', 'vl_setupnn.m'))
 %%
 
-imdbPath = 'data\lipton_lemon.mat'
+imdbPath = 'data\tool_yellow.mat'
 imdb = load(imdbPath);
 
-netPath = ['experiments\objectPose\lipton1\net-epoch-15.mat'];% network path
+netPath = ['experiments\objectPose\tool1\net-epoch-15.mat'];% network path
 %netPath = ['data\model\net-epoch-15.mat'];
 
 load(netPath)
@@ -27,7 +27,7 @@ end
 %%
 
 
-file1 = ['data\milk_carton.off'];
+file1 = ['data\tool_yellow_no_col.off'];
 [vertex1,face1] = read_off(file1);
 mesh1.vertex = vertex1;
 mesh1.face = face1;
@@ -76,7 +76,7 @@ for i= 1:length(testset)
     subplot(1,2,2)
     h.Vertices = (R * mesh1.vertex')';
     
-    pause(0.1)   
+    pause(0.5)   
 
     
 end
